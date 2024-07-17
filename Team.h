@@ -4,16 +4,16 @@
 #include <string>
 #include <vector>
 
-class Team
-{
-public:
-    int teamID;
+class Team {
+private:
     std::string teamName;
-    std::vector<int> players;
+    std::vector<int> playerRegistrationNumbers;
 
-    Team(int id, std::string name);
-    void display();
-    void addPlayer(int playerID);
+public:
+    Team();
+    Team(std::string name);
+    void addPlayer(int regNo);
+    void displayTeamInfo() const;
 };
 
-#endif // TEAM_H
+#endif

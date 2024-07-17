@@ -1,93 +1,143 @@
+#include "Player.h"
+#include "Team.h"
 #include <iostream>
-#include "ClubManagementSystem.h"
+#include <vector>
+#include <unordered_map>
 
-int main()
-{
-    ClubManagementSystem cms;
+std::unordered_map<int, Player> players;
+std::unordered_map<std::string, Team> teams;
 
-    // Sample users
-    cms.addUser("admin", "password");
+void displayPlayerInfo() {
+    for (const auto &pair : players) {
+        pair.second.displayPlayerInfo();
+        std::cout << std::endl;
+    }
+}
 
-    // Sample data
-    cms.addPlayer(Player(1, "John", "Doe", "2000-01-01", 100));
-    cms.addPlayer(Player(2, "Jane", "Smith", "1999-02-02", 150));
-    cms.addTeam(Team(1, "Team A"));
-    cms.addTeam(Team(2, "Team B"));
+void addNewPlayer() {
+    int regNo, runs;
+    std::string fName, lName, dob;
+    
+    std::cout << "Enter Registration Number: ";
+    std::cin >> regNo;
+    std::cout << "Enter First Name: ";
+    std::cin >> fName;
+    std::cout << "Enter Last Name: ";
+    std::cin >> lName;
+    std::cout << "Enter Date of Birth (YYYY-MM-DD): ";
+    std::cin >> dob;
+    std::cout << "Enter Runs Scored: ";
+    std::cin >> runs;
 
-    while (true)
-    {
-        int choice;
-        std::cout << "1. Login\n2. Add Player\n3. Display Players\n4. Add Team\n5. Display Teams\n6. Search Player\n7. Logout\n8. Exit\n";
-        std::cout << "Enter choice: ";
+    players[regNo] = Player(regNo, fName, lName, dob, runs);
+    std::cout << "Player added successfully." << std::endl;
+}
+
+void manageTeams() {
+    std::string teamName;
+    int regNo;
+
+    std::cout << "Enter Team Name: ";
+    std::cin >> teamName;
+
+    if (teams.find(teamName) == teams.end()) {
+        teams[teamName] = Team(teamName);
+    }
+
+    std::cout << "Enter Player Registration Number to add to team: ";
+    std::cin >> regNo;
+
+    if (players.find(regNo) != players.end()) {
+        teams[teamName].addPlayer(regNo);
+        players[regNo].addTeam(teamName);
+        std::cout << "Player added to team successfully." << std::endl;
+    } else {
+        std::cout << "Player not found." << std::endl;
+    }
+}
+
+void searchPlayer() {
+    int regNo;
+    std::cout << "Enter Registration Number to search: ";
+    std::cin >> regNo;
+
+    if (players.find(regNo) != players.end()) {
+        players[regNo].displayPlayerInfo();
+    } else {
+        std::cout << "Player not found." << std::endl;
+    }
+}
+
+void viewTeamDetails() {
+    std::string teamName;
+    std::cout << "Enter Team Name to view details: ";
+    std::cin >> teamName;
+
+    if (teams.find(teamName) != teams.end()) {
+        teams[teamName].displayTeamInfo();
+    } else {
+        std::cout << "Team not found." << std::endl;
+    }
+}
+
+void userLogin() {
+    std::string username, password;
+    std::cout << "Enter username: ";
+    std::cin >> username;
+    std::cout << "Enter password: ";
+    std::cin >> password;
+
+    // For simplicity, assume any non-empty username/password is valid
+    if (!username.empty() && !password.empty()) {
+        std::cout << "Login successful." << std::endl;
+    } else {
+        std::cout << "Invalid login." << std::endl;
+        exit(0);
+    }
+}
+
+int main() {
+    userLogin();
+
+    int choice;
+    do {
+        std::cout << "1. Display Player Information\n";
+        std::cout << "2. Add New Player\n";
+        std::cout << "3. Manage Teams\n";
+        std::cout << "4. Search Player\n";
+        std::cout << "5. View Team Details\n";
+        std::cout << "6. Logout\n";
+        std::cout << "7. Exit\n";
+        std::cout << "Enter your choice: ";
         std::cin >> choice;
 
-        if (choice == 1)
-        {
-            std::string username, password;
-            std::cout << "Enter username: ";
-            std::cin >> username;
-            std::cout << "Enter password: ";
-            std::cin >> password;
-            if (cms.login(username, password))
-            {
-                std::cout << "Login successful!" << std::endl;
-            }
-            else
-            {
-                std::cout << "Invalid credentials." << std::endl;
-            }
+        switch (choice) {
+            case 1:
+                displayPlayerInfo();
+                break;
+            case 2:
+                addNewPlayer();
+                break;
+            case 3:
+                manageTeams();
+                break;
+            case 4:
+                searchPlayer();
+                break;
+            case 5:
+                viewTeamDetails();
+                break;
+            case 6:
+                std::cout << "Logged out." << std::endl;
+                userLogin();
+                break;
+            case 7:
+                std::cout << "Exiting..." << std::endl;
+                break;
+            default:
+                std::cout << "Invalid choice." << std::endl;
         }
-        else if (choice == 2)
-        {
-            int regNum, runs;
-            std::string fName, lName, dob;
-            std::cout << "Enter player registration number: ";
-            std::cin >> regNum;
-            std::cout << "Enter first name: ";
-            std::cin >> fName;
-            std::cout << "Enter last name: ";
-            std::cin >> lName;
-            std::cout << "Enter date of birth (YYYY-MM-DD): ";
-            std::cin >> dob;
-            std::cout << "Enter runs scored: ";
-            std::cin >> runs;
-            cms.addPlayer(Player(regNum, fName, lName, dob, runs));
-        }
-        else if (choice == 3)
-        {
-            cms.displayPlayers();
-        }
-        else if (choice == 4)
-        {
-            int teamID;
-            std::string teamName;
-            std::cout << "Enter team ID: ";
-            std::cin >> teamID;
-            std::cout << "Enter team name: ";
-            std::cin >> teamName;
-            cms.addTeam(Team(teamID, teamName));
-        }
-        else if (choice == 5)
-        {
-            cms.displayTeams();
-        }
-        else if (choice == 6)
-        {
-            int regNum;
-            std::cout << "Enter player registration number: ";
-            std::cin >> regNum;
-            cms.searchPlayer(regNum);
-        }
-        else if (choice == 7)
-        {
-            cms.logout();
-            std::cout << "Logged out." << std::endl;
-        }
-        else if (choice == 8)
-        {
-            break;
-        }
-    }
+    } while (choice != 7);
 
     return 0;
 }
