@@ -1,26 +1,19 @@
 #include "Team.h"
 #include <iostream>
 
-Team::Team(int id, std::string name) : teamID(id), teamName(name) {}
+Team::Team() : teamName("") {}
 
-void Team::display()
-{
-    std::cout << "Team ID: " << teamID << "\nTeam Name: " << teamName << "\nPlayers: ";
-    for (int playerID : players)
-    {
-        std::cout << playerID << " ";
-    }
-    std::cout << std::endl;
+Team::Team(std::string name) : teamName(name) {}
+
+void Team::addPlayer(int regNo) {
+    playerRegistrationNumbers.push_back(regNo);
 }
 
-void Team::addPlayer(int playerID)
-{
-    if (players.size() < 2)
-    {
-        players.push_back(playerID);
+void Team::displayTeamInfo() const {
+    std::cout << "Team Name: " << teamName << std::endl;
+    std::cout << "Players: ";
+    for (const auto &regNo : playerRegistrationNumbers) {
+        std::cout << regNo << " ";
     }
-    else
-    {
-        std::cout << "Team already has 2 players." << std::endl;
-    }
+    std::cout << std::endl;
 }
