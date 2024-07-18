@@ -131,20 +131,26 @@ void viewTeamDetails() {
 
 // Function for user login
 void userLogin() {
+    std::string validUsername = "admin"; // Example valid username
+    std::string validPassword = "password123"; // Example valid password
     std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
 
-    // For simplicity, assume any non-empty username/password is valid
-    if (!username.empty() && !password.empty()) {
-        std::cout << "Login successful." << std::endl;
-    } else {
-        std::cout << "Invalid login." << std::endl;
-        exit(0);
-    }
+    bool loggedIn = false;
+    do {
+        std::cout << "Enter username: ";
+        std::cin >> username;
+        std::cout << "Enter password: ";
+        std::cin >> password;
+
+        if (username == validUsername && password == validPassword) {
+            loggedIn = true;
+            std::cout << "Login successful." << std::endl;
+        } else {
+            std::cout << "Invalid username or password. Please try again." << std::endl;
+        }
+    } while (!loggedIn);
 }
+
 
 // Function to read player details from file
 void readPlayersFromFile() {
